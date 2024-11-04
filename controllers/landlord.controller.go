@@ -48,7 +48,32 @@ func StoreLandlord(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "CreateSuccess",
+		"message": "Success",
 		"data":    newLandlord,
+	})
+}
+
+func GetLandlordByID(ctx *gin.Context) {
+	ID := ctx.Param("id")
+	landlord, err := repository.FindLandlordByID(ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "FindFailed",
+			"data":    err.Error(),
+		})
+		return
+	}
+
+	if landlord.ID == "" {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"message": "NoEntity",
+			"data":    nil,
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Success",
+		"data":    landlord,
 	})
 }

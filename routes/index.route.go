@@ -14,6 +14,7 @@ func InitRoute(app *gin.Engine) {
 	landlordRoute := route.Group("landlord")
 
 	landlordRoute.POST("/", store_controllers.StoreLandlord)
+	landlordRoute.GET("/:id", store_controllers.GetLandlordByID)
 	// ROUTE STATIC
 	route.Static(app_config.STATIC_ROUTE, app_config.STATIC_DIR)
 }
