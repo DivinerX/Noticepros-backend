@@ -6,13 +6,18 @@ import (
 )
 
 func StoreLandlord(landlord models.Landlord) (models.Landlord, error) {
-	err := database.DB.Table("landlords").Create(&landlord).Error
+	err := database.DB.Model(&models.Landlord{}).Create(&landlord).Error
 	return landlord, err
 }
 
 func FindLandlordByEmail(Email string) (models.Landlord, error) {
 	landlord := new(models.Landlord)
-	err := database.DB.Table("landlords").Where("email=?", Email).Find(&landlord).Error
+	err := database.DB.Model(&models.Landlord{}).Where("email=?", Email).Find(&landlord).Error
 
 	return *landlord, err
+}
+
+func UpdateLandlord(ID string, landlord models.Landlord) (models.Landlord, error) {
+	err := database.DB.Model(&models.Landlord{}).Where("id=?", ID).Updates(&landlord).Error
+	return landlord, err
 }
