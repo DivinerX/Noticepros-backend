@@ -5,10 +5,13 @@ import (
 	configs "noticepros/config"
 	"noticepros/config/app_config"
 	"noticepros/config/cors_config"
+	"noticepros/config/validate_config"
 	"noticepros/database"
 	"noticepros/routes"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 )
 
@@ -33,6 +36,9 @@ func BootStrapApp() {
 	// CORS
 	app.Use(cors_config.CorsConfig)
 
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("phone", validate_config.PhoneValidator)
+	}
 	// INIT ROUTE
 	routes.InitRoute(app)
 
