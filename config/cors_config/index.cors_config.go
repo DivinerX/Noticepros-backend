@@ -7,7 +7,7 @@ import (
 )
 
 func CorsConfig(ctx *gin.Context) {
-	ctx.Writer.Header().Set("Access-Controll-Allow-Origin", "https://domainsaya.com, https://domaindua.com, http://127.0.0.1:8080")
+	ctx.Writer.Header().Set("Access-Controll-Allow-Origin", "*")
 
 	ctx.Writer.Header().Set("Access-Controll-Allow-Credential", "true")
 
