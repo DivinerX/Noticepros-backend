@@ -1,9 +1,7 @@
 package controllers
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"noticepros/dtos/requests"
 	"noticepros/dtos/responses"
@@ -57,16 +55,8 @@ func StoreUser(ctx *gin.Context) {
 		return
 	}
 
-	sub := responses.Sub{
-		ID:   newUser.ID,
-		Type: 1,
-	}
-	subData, err := json.Marshal(sub)
-	if err != nil {
-		log.Fatal(err)
-	}
 	claims := jwt.MapClaims{
-		"sub": subData,
+		"sub": newUser.ID,
 		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	}
 	token, errToken := utils.GenerateToken(&claims)
@@ -90,7 +80,7 @@ func StoreUser(ctx *gin.Context) {
 
 func GetUserByID(ctx *gin.Context) {
 	ID := ctx.Param("id")
-	landlord, err := repository.FindUserByID(ID)
+	user, err := repository.FindUserByID(ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "FindFailed",
@@ -99,7 +89,7 @@ func GetUserByID(ctx *gin.Context) {
 		return
 	}
 
-	if landlord.ID == "" {
+	if user.ID == "" {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"message": "NoEntity",
 			"data":    nil,
@@ -109,6 +99,6 @@ func GetUserByID(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "Success",
-		"data":    landlord,
+		"data":    user,
 	})
 }

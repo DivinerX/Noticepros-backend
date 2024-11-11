@@ -1,12 +1,10 @@
 package controllers
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"noticepros/dtos/requests"
-	"noticepros/dtos/responses"
+	"noticepros/models"
 	"noticepros/repository"
 	"noticepros/utils"
 	"time"
@@ -31,7 +29,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	landlord, err := repository.FindUserByEmail(loginReq.Email)
+	user, err := repository.FindUserByEmail(loginReq.Email)
 	if err != nil {
 		println(err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -40,30 +38,22 @@ func Login(ctx *gin.Context) {
 		})
 		return
 	}
-	if landlord.ID == "" {
+	if user.ID == "" {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"message": "CredintialError",
 			"data":    "IncorrectUser",
 		})
 		return
 	}
-	if landlord.Password != loginReq.Password {
+	if user.Password != loginReq.Password {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"message": "CredintialError",
 			"data":    "IncorrectPassword",
 		})
 		return
 	}
-	sub := responses.Sub{
-		ID:   landlord.ID,
-		Type: 1,
-	}
-	subData, err := json.Marshal(sub)
-	if err != nil {
-		log.Fatal(err)
-	}
 	claims := jwt.MapClaims{
-		"sub": subData,
+		"sub": user.ID,
 		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	}
 	token, errToken := utils.GenerateToken(&claims)
@@ -78,9 +68,13 @@ func Login(ctx *gin.Context) {
 		"message": "Success",
 		"data":    token,
 	})
-	return
 }
 
 func GetUserInfo(ctx *gin.Context) {
-
+	user, _ := ctx.Get("user")
+	userData := user.(models.User)
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "data saved successfully.",
+		"data":    userData,
+	})
 }
