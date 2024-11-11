@@ -28,8 +28,8 @@ type Attorney struct {
 	UpdatedAt     time.Time
 }
 
-func (landlord *Attorney) BeforeCreate(tx *gorm.DB) (err error) {
-	landlord.ID = utils.RandomString(10)
-	landlord.Password = utils.RandomString(10)
+func (attorney *Attorney) BeforeCreate(tx *gorm.DB) (err error) {
+	attorney.ID = utils.RandomString(10)
+	attorney.Password = utils.RandomString(10)
 	return
 }

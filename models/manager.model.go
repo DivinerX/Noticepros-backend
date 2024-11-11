@@ -28,8 +28,8 @@ type Manager struct {
 	UpdatedAt     time.Time
 }
 
-func (landlord *Manager) BeforeCreate(tx *gorm.DB) (err error) {
-	landlord.ID = utils.RandomString(10)
-	landlord.Password = utils.RandomString(10)
+func (manager *Manager) BeforeCreate(tx *gorm.DB) (err error) {
+	manager.ID = utils.RandomString(10)
+	manager.Password = utils.RandomString(10)
 	return
 }
