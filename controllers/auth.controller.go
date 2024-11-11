@@ -107,7 +107,7 @@ func Login(ctx *gin.Context) {
 		}
 		sub := responses.Sub{
 			ID:   manager.ID,
-			Type: 1,
+			Type: 2,
 		}
 		subData, err := json.Marshal(sub)
 		if err != nil {
@@ -156,7 +156,7 @@ func Login(ctx *gin.Context) {
 		}
 		sub := responses.Sub{
 			ID:   attorney.ID,
-			Type: 1,
+			Type: 3,
 		}
 		subData, err := json.Marshal(sub)
 		if err != nil {

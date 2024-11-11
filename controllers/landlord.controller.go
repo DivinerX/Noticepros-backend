@@ -1,13 +1,19 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"noticepros/dtos/requests"
+	"noticepros/dtos/responses"
 	"noticepros/repository"
+	"noticepros/utils"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func StoreLandlord(ctx *gin.Context) {
@@ -25,23 +31,24 @@ func StoreLandlord(ctx *gin.Context) {
 	}
 
 	landlord := requests.ConvertLandlordStoreRequestToModel(landlordReq)
-	/*
-		THIS IS FOR PREVENTING EMAIL DUPLICATION
 
-		existLandlord, err := repository.FindLandlordByEmail(landlordReq.Email)
+	// THIS IS FOR PREVENTING EMAIL DUPLICATION
 
-		if err != nil {
-			println(err)
-		}
+	existLandlord, err := repository.FindLandlordByEmail(landlordReq.Email1)
 
-		if existLandlord.ID != "" {
-			ctx.AbortWithStatusJSON(http.StatusInsufficientStorage, gin.H{
-				"message": "EmailAlreadyUse",
-			})
-			return
-		}
-	*/
+	if err != nil {
+		println(err)
+	}
+
+	if existLandlord.ID != "" {
+		ctx.AbortWithStatusJSON(http.StatusInsufficientStorage, gin.H{
+			"message": "EmailAlreadyUse",
+		})
+		return
+	}
+
 	newLandlord, errDb := repository.StoreLandlord(landlord)
+
 	if errDb != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "CreateFailed",
@@ -50,9 +57,34 @@ func StoreLandlord(ctx *gin.Context) {
 		return
 	}
 
+	sub := responses.Sub{
+		ID:   newLandlord.ID,
+		Type: 1,
+	}
+	subData, err := json.Marshal(sub)
+	if err != nil {
+		log.Fatal(err)
+	}
+	claims := jwt.MapClaims{
+		"sub": subData,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	}
+	token, errToken := utils.GenerateToken(&claims)
+	result := responses.LandlordResponse{
+		ID:       newLandlord.ID,
+		Password: newLandlord.Password,
+		Token:    token,
+	}
+	if errToken != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "FailedGenerateToken",
+			"data":    errToken,
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "Success",
-		"data":    newLandlord,
+		"data":    result,
 	})
 }
 
