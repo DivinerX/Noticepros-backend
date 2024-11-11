@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var charset = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+var charset = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
 func RandomString(n int) string {
 

@@ -1,8 +1,9 @@
 package models
 
 import (
-	"math/rand"
 	"time"
+
+	"noticepros/utils"
 
 	"gorm.io/gorm"
 )
@@ -28,19 +29,8 @@ type Landlord struct {
 	UpdatedAt     time.Time
 }
 
-func randomString(n int) string {
-	const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	rand.Seed(time.Now().UnixNano())
-
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(b)
-}
-
 func (landlord *Landlord) BeforeCreate(tx *gorm.DB) (err error) {
-	landlord.ID = randomString(10)
-	landlord.Password = randomString(10)
+	landlord.ID = utils.RandomString(10)
+	landlord.Password = utils.RandomString(10)
 	return
 }

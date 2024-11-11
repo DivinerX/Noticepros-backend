@@ -1,4 +1,4 @@
-package store_controllers
+package controllers
 
 import (
 	"fmt"
