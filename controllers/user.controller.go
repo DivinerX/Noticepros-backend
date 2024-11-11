@@ -16,8 +16,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func StoreLandlord(ctx *gin.Context) {
-	var landlordReq requests.StoreLandlordRequest
+func StoreUser(ctx *gin.Context) {
+	var landlordReq requests.StoreUserRequest
 	if err := ctx.ShouldBindJSON(&landlordReq); err != nil {
 		var validationErrors []string
 		for _, err := range err.(validator.ValidationErrors) {
@@ -30,24 +30,24 @@ func StoreLandlord(ctx *gin.Context) {
 		return
 	}
 
-	landlord := requests.ConvertLandlordStoreRequestToModel(landlordReq)
+	landlord := requests.ConvertUserStoreRequestToModel(landlordReq)
 
 	// THIS IS FOR PREVENTING EMAIL DUPLICATION
 
-	existLandlord, err := repository.FindLandlordByEmail(landlordReq.Email1)
+	existUser, err := repository.FindUserByEmail(landlordReq.Email1)
 
 	if err != nil {
 		println(err)
 	}
 
-	if existLandlord.ID != "" {
+	if existUser.ID != "" {
 		ctx.AbortWithStatusJSON(http.StatusInsufficientStorage, gin.H{
 			"message": "EmailAlreadyUse",
 		})
 		return
 	}
 
-	newLandlord, errDb := repository.StoreLandlord(landlord)
+	newUser, errDb := repository.StoreUser(landlord)
 
 	if errDb != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -58,7 +58,7 @@ func StoreLandlord(ctx *gin.Context) {
 	}
 
 	sub := responses.Sub{
-		ID:   newLandlord.ID,
+		ID:   newUser.ID,
 		Type: 1,
 	}
 	subData, err := json.Marshal(sub)
@@ -70,9 +70,9 @@ func StoreLandlord(ctx *gin.Context) {
 		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	}
 	token, errToken := utils.GenerateToken(&claims)
-	result := responses.LandlordResponse{
-		ID:       newLandlord.ID,
-		Password: newLandlord.Password,
+	result := responses.UserResponse{
+		ID:       newUser.ID,
+		Password: newUser.Password,
 		Token:    token,
 	}
 	if errToken != nil {
@@ -88,9 +88,9 @@ func StoreLandlord(ctx *gin.Context) {
 	})
 }
 
-func GetLandlordByID(ctx *gin.Context) {
+func GetUserByID(ctx *gin.Context) {
 	ID := ctx.Param("id")
-	landlord, err := repository.FindLandlordByID(ID)
+	landlord, err := repository.FindUserByID(ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "FindFailed",

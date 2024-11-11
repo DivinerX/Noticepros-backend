@@ -4,9 +4,10 @@ import (
 	"noticepros/models"
 )
 
-type StoreLandlordRequest struct {
+type StoreUserRequest struct {
 	FirstName     string `binding:"required"`
 	LastName      string `binding:"required"`
+	Role          string `binding:"required"`
 	BusinessName  string
 	Address       string `binding:"required"`
 	City          string `binding:"required"`
@@ -21,10 +22,11 @@ type StoreLandlordRequest struct {
 	Email2        string `binding:"omitempty,email"`
 }
 
-func ConvertLandlordStoreRequestToModel(req StoreLandlordRequest) models.Landlord {
-	return models.Landlord{
+func ConvertUserStoreRequestToModel(req StoreUserRequest) models.User {
+	return models.User{
 		FirstName:     req.FirstName,
 		LastName:      req.LastName,
+		Role:          req.Role,
 		BusinessName:  req.BusinessName,
 		Address:       req.Address,
 		City:          req.City,

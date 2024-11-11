@@ -1,6 +1,6 @@
 package responses
 
-type LandlordResponse struct {
+type UserResponse struct {
 	ID       string
 	Password string
 	Token    string

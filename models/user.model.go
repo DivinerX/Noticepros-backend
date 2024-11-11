@@ -8,13 +8,14 @@ import (
 	"gorm.io/gorm"
 )
 
-type Landlord struct {
+type User struct {
 	ID            string `gorm:"type:string;primaryKey"`
 	Password      string `gorm:"column:pwd"`
+	Role          string
 	FirstName     string `gorm:"column:fname"`
 	LastName      string `gorm:"column:lname"`
 	BusinessName  string `gorm:"column:bname"`
-	Address       string `gorm:"column:address"`
+	Address       string
 	City          string `gorm:"column:cty"`
 	Unit          string `gorm:"column:unit"`
 	State         string `gorm:"column:st"`
@@ -29,8 +30,8 @@ type Landlord struct {
 	UpdatedAt     time.Time
 }
 
-func (landlord *Landlord) BeforeCreate(tx *gorm.DB) (err error) {
-	landlord.ID = utils.RandomString(10)
-	landlord.Password = utils.RandomString(10)
+func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
+	user.ID = utils.RandomString(10)
+	user.Password = utils.RandomString(10)
 	return
 }
