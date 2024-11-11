@@ -12,7 +12,7 @@ func StoreLandlord(landlord models.Landlord) (models.Landlord, error) {
 
 func FindLandlordByEmail(Email string) (models.Landlord, error) {
 	landlord := new(models.Landlord)
-	err := database.DB.Model(&models.Landlord{}).Where("email=?", Email).Find(&landlord).Error
+	err := database.DB.Model(&models.Landlord{}).Where("eml1=?", Email).Find(&landlord).Error
 
 	return *landlord, err
 }
