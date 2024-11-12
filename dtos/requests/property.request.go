@@ -3,10 +3,10 @@ package requests
 import "noticepros/models"
 
 type PropertyRequest struct {
-	Name         string `binding:"required"`
-	Address      string
+	Name         string
+	Address      string `binding:"required"`
 	City         string `binding:"required"`
-	Unit         string `binding:"required"`
+	Unit         string
 	State        string `binding:"required"`
 	ZipCode      string `binding:"required"`
 	County       string `binding:"required"`
@@ -23,6 +23,5 @@ func ConvertPropertyRequestToModel(req PropertyRequest) models.Property {
 		ZipCode:      req.ZipCode,
 		County:       req.County,
 		NumUnitTotal: req.NumUnitTotal,
-	Owner        *User          `gorm:"foreignKey:UserID"`
 	}
 }
