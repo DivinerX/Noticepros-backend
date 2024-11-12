@@ -19,7 +19,7 @@ func ConnectDatabase() {
 	DB, errConnection = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	// DB.Migrator().DropTable(&models.User{})
-	DB.AutoMigrate(&models.User{}, &models.Property{}, &models.Tenant{})
+	DB.AutoMigrate(&models.User{}, &models.Property{}, &models.Tenant{}, &models.Particular{})
 
 	if errConnection != nil {
 		panic("Failed connect to database.")

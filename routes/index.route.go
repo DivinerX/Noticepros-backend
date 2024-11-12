@@ -25,6 +25,11 @@ func InitRoute(app *gin.Engine) {
 	tenantRoute := route.Group("tenant")
 	tenantRoute.POST("/", middleware.RequireAuth, controllers.StoreTenant)
 	tenantRoute.GET("/", controllers.GetAllTenants)
+
+	particularRoute := route.Group("particular")
+	particularRoute.POST("/", middleware.RequireAuth, controllers.StoreParticular)
+	particularRoute.GET("/", controllers.GetAllParticulars)
+
 	// ROUTE STATIC
 	route.Static(app_config.STATIC_ROUTE, app_config.STATIC_DIR)
 }
