@@ -18,6 +18,8 @@ type Property struct {
 	ZipCode      string `gorm:"column:zip"`
 	County       string `gorm:"column:cnty"`
 	NumUnitTotal uint8
+	Owner        User `gorm:"foreignKey:OID"`
+	OID          string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
